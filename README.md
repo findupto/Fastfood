@@ -1,31 +1,43 @@
-# Fastfood POS
+# MK Pizza & Ice Bar POS
 
-A Java 17 desktop Point of Sale system for a fast-food store. Version 2 adds persistent SQLite storage, authentication, inventory, product management, sales history and a management dashboard.
+Java 17 desktop Point of Sale system for **MK Pizza & Ice Bar**, Collage Road Abbas Chowk, Bhakkar, Pakistan.
+
+## Business Defaults
+
+- **Business:** MK Pizza & Ice Bar
+- **Address:** Collage Road Abbas Chowk, Bhakkar, Pakistan
+- **Phone:** 0316 9700025
+- **Currency:** Rs.
+- **Tax:** 0%
+- **Printer:** Bluetooth MAC can be configured from **Settings**
 
 ## Features
 
-- Login with roles (`ADMIN` and `CASHIER`)
+- Login with Admin and Owner roles
 - SQLite database created automatically as `fastfood.db`
-- Fast-food menu with categories, prices and live stock
-- Cart quantity handling and stock validation
-- 5% tax and configurable discount percentage
-- Cash payment and automatic change calculation
-- Persistent sales and sale-item records
-- Unique receipt numbers and printable receipts
+- Fast-food menu with live stock
+- Cart and quantity handling
+- 0% tax by default
+- Percentage discount
+- Cash payment and change calculation
+- Persistent sales and sale items
+- Unique receipt numbers
+- Printable receipts containing business information
 - Product add/update and stock management
 - Product deactivation
-- Daily sales totals and average order value
-- Recent sales report
-- Top-selling items report
+- Daily sales dashboard
+- Recent sales
+- Top-selling products
 - Low-stock report
-- Transaction-safe checkout: sale and stock deduction commit together
+- Settings for business details, currency, tax, receipt footer and Bluetooth printer MAC
+- Transaction-safe checkout and stock deduction
 
-## Technology
+## Default Users
 
-- Java 17+
-- Java Swing
-- Maven
-- SQLite via Xerial JDBC
+| Username | Role | Password |
+|---|---|---|
+| `admin` | Admin | `0099` |
+| `owner` | Owner | `0099` |
 
 ## Run
 
@@ -34,22 +46,18 @@ mvn clean compile
 mvn exec:java
 ```
 
-Main class:
+Main class: `com.findupto.fastfood.FastfoodPOS`
 
-`com.findupto.fastfood.FastfoodPOS`
+## Technology
 
-## Default Login
-
-| Username | Password | Role |
-|---|---|---|
-| admin | admin | ADMIN |
-| cashier | cashier | CASHIER |
-
-For a real deployment, replace the demo credentials with secure password hashing and proper role-based permissions.
+- Java 17+
+- Java Swing
+- Maven
+- SQLite via Xerial JDBC
 
 ## Default Menu
 
-| Code | Item | Category | Price (PKR) | Initial Stock |
+| Code | Item | Category | Price (Rs.) | Initial Stock |
 |---|---|---|---:|---:|
 | B01 | Zinger Burger | Burgers | 450 | 50 |
 | B02 | Chicken Burger | Burgers | 380 | 50 |
@@ -62,26 +70,16 @@ For a real deployment, replace the demo credentials with secure password hashing
 | D02 | Fresh Lemonade | Drinks | 180 | 80 |
 | D03 | Mineral Water | Drinks | 80 | 100 |
 
-## Project Structure
+## Printer
 
-```text
-Fastfood/
-├── pom.xml
-├── README.md
-└── src/main/java/com/findupto/fastfood/FastfoodPOS.java
-```
+Open **Settings** after logging in as Admin or Owner and enter the Bluetooth printer MAC address. The MAC is persisted as the POS printer configuration. Java desktop printing uses the printer selected by the operating system's print dialog; direct Bluetooth printing requires a platform-specific Bluetooth/ESC-POS integration.
 
-## Database
-
-The application creates these tables automatically:
+## Database Tables
 
 - `users`
 - `products`
 - `sales`
 - `sale_items`
+- `settings`
 
-The SQLite file is created in the application's working directory.
-
-## Important
-
-This version is a strong academic/small-store POS foundation. For production use, the next upgrades should include password hashing, proper role permissions, card/mobile-wallet payment integration, barcode scanning, customer/loyalty management, returns/refunds, database backup/restore, audit logs and automated tests.
+The application initializes the business defaults and credentials on startup. Existing `admin` and `owner` credentials are synchronized to `0099`.
