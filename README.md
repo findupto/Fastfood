@@ -1,23 +1,31 @@
 # Fastfood POS
 
-A desktop Point of Sale (POS) application for a fast-food store, developed in Java 17 with Swing.
+A Java 17 desktop Point of Sale system for a fast-food store. Version 2 adds persistent SQLite storage, authentication, inventory, product management, sales history and a management dashboard.
 
 ## Features
 
-- Fast-food menu with categories and prices
-- Add items to an order with quantity handling
-- Remove individual items or clear the order
-- Automatic subtotal, 5% tax, discount, and grand total calculation
-- Cash payment validation and change calculation
-- Receipt preview with date/time
-- Receipt printing through Java's print support
-- No external runtime dependencies
+- Login with roles (`ADMIN` and `CASHIER`)
+- SQLite database created automatically as `fastfood.db`
+- Fast-food menu with categories, prices and live stock
+- Cart quantity handling and stock validation
+- 5% tax and configurable discount percentage
+- Cash payment and automatic change calculation
+- Persistent sales and sale-item records
+- Unique receipt numbers and printable receipts
+- Product add/update and stock management
+- Product deactivation
+- Daily sales totals and average order value
+- Recent sales report
+- Top-selling items report
+- Low-stock report
+- Transaction-safe checkout: sale and stock deduction commit together
 
 ## Technology
 
 - Java 17+
 - Java Swing
 - Maven
+- SQLite via Xerial JDBC
 
 ## Run
 
@@ -26,9 +34,33 @@ mvn clean compile
 mvn exec:java
 ```
 
-Or run the main class directly from an IDE:
+Main class:
 
 `com.findupto.fastfood.FastfoodPOS`
+
+## Default Login
+
+| Username | Password | Role |
+|---|---|---|
+| admin | admin | ADMIN |
+| cashier | cashier | CASHIER |
+
+For a real deployment, replace the demo credentials with secure password hashing and proper role-based permissions.
+
+## Default Menu
+
+| Code | Item | Category | Price (PKR) | Initial Stock |
+|---|---|---|---:|---:|
+| B01 | Zinger Burger | Burgers | 450 | 50 |
+| B02 | Chicken Burger | Burgers | 380 | 50 |
+| B03 | Beef Burger | Burgers | 520 | 30 |
+| F01 | Chicken Fries | Fries | 300 | 60 |
+| F02 | Loaded Fries | Fries | 420 | 40 |
+| P01 | Chicken Pizza | Pizza | 850 | 25 |
+| P02 | Pepperoni Pizza | Pizza | 950 | 25 |
+| D01 | Cold Drink | Drinks | 120 | 100 |
+| D02 | Fresh Lemonade | Drinks | 180 | 80 |
+| D03 | Mineral Water | Drinks | 80 | 100 |
 
 ## Project Structure
 
@@ -36,28 +68,20 @@ Or run the main class directly from an IDE:
 Fastfood/
 ├── pom.xml
 ├── README.md
-└── src/
-    └── main/
-        └── java/
-            └── com/findupto/fastfood/
-                └── FastfoodPOS.java
+└── src/main/java/com/findupto/fastfood/FastfoodPOS.java
 ```
 
-## Default Menu
+## Database
 
-| Code | Item | Price (PKR) |
-|---|---|---:|
-| B01 | Zinger Burger | 450 |
-| B02 | Chicken Burger | 380 |
-| B03 | Beef Burger | 520 |
-| F01 | Chicken Fries | 300 |
-| F02 | Loaded Fries | 420 |
-| P01 | Chicken Pizza | 850 |
-| P02 | Pepperoni Pizza | 950 |
-| D01 | Cold Drink | 120 |
-| D02 | Fresh Lemonade | 180 |
-| D03 | Mineral Water | 80 |
+The application creates these tables automatically:
 
-## Notes
+- `users`
+- `products`
+- `sales`
+- `sale_items`
 
-This is a clean starter POS suitable for an academic project or small store prototype. Product management, inventory persistence, user login, database storage, sales reports, barcode scanning, and customer management can be added as the next development phase.
+The SQLite file is created in the application's working directory.
+
+## Important
+
+This version is a strong academic/small-store POS foundation. For production use, the next upgrades should include password hashing, proper role permissions, card/mobile-wallet payment integration, barcode scanning, customer/loyalty management, returns/refunds, database backup/restore, audit logs and automated tests.
