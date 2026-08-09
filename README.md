@@ -1,36 +1,15 @@
 # MK Pizza & Ice Bar POS
 
-Java 17 desktop Point of Sale system for **MK Pizza & Ice Bar**, Collage Road Abbas Chowk, Bhakkar, Pakistan.
+Complete Java 17 desktop Point of Sale system for **MK Pizza & Ice Bar**, Collage Road Abbas Chowk, Bhakkar, Pakistan.
 
 ## Business Defaults
 
-- **Business:** MK Pizza & Ice Bar
-- **Address:** Collage Road Abbas Chowk, Bhakkar, Pakistan
-- **Phone:** 0316 9700025
-- **Currency:** Rs.
-- **Tax:** 0%
-- **Printer:** Bluetooth MAC can be configured from **Settings**
-
-## Features
-
-- Login with Admin and Owner roles
-- SQLite database created automatically as `fastfood.db`
-- Fast-food menu with live stock
-- Cart and quantity handling
-- 0% tax by default
-- Percentage discount
-- Cash payment and change calculation
-- Persistent sales and sale items
-- Unique receipt numbers
-- Printable receipts containing business information
-- Product add/update and stock management
-- Product deactivation
-- Daily sales dashboard
-- Recent sales
-- Top-selling products
-- Low-stock report
-- Settings for business details, currency, tax, receipt footer and Bluetooth printer MAC
-- Transaction-safe checkout and stock deduction
+- Business: **MK Pizza & Ice Bar**
+- Address: **Collage Road Abbas Chowk, Bhakkar, Pakistan**
+- Phone: **0316 9700025**
+- Currency: **Rs.**
+- Tax: **0%**
+- Printer: configure Bluetooth MAC in **Settings**
 
 ## Default Users
 
@@ -39,6 +18,33 @@ Java 17 desktop Point of Sale system for **MK Pizza & Ice Bar**, Collage Road Ab
 | `admin` | Admin | `0099` |
 | `owner` | Owner | `0099` |
 
+Passwords are stored as SHA-256 hashes in the completed POS database.
+
+## Completed POS Features
+
+- Secure login with Admin and Owner roles
+- Product/menu management with categories, prices and stock
+- Add/update/deactivate/reactivate products
+- Live stock validation at checkout
+- Cart quantity editing and removal
+- Percentage discounts
+- Configurable tax (0% default)
+- Cash payment and automatic change
+- Persistent SQLite sales database
+- Unique receipt numbers
+- Business-branded receipt generation and printing
+- Sales history with receipt search
+- Full-sale refund with automatic stock restoration
+- Refund status protection against duplicate refunds
+- Daily sales dashboard
+- Top-selling products
+- Low-stock report
+- User management and account disabling
+- Business/tax/currency/receipt/printer settings
+- SQLite database backup
+- Audit log for sales and refunds
+- Transaction-safe checkout and refund operations
+
 ## Run
 
 ```bash
@@ -46,7 +52,7 @@ mvn clean compile
 mvn exec:java
 ```
 
-Main class: `com.findupto.fastfood.FastfoodPOS`
+Main class: `com.findupto.fastfood.CompletePOS`
 
 ## Technology
 
@@ -72,14 +78,17 @@ Main class: `com.findupto.fastfood.FastfoodPOS`
 
 ## Printer
 
-Open **Settings** after logging in as Admin or Owner and enter the Bluetooth printer MAC address. The MAC is persisted as the POS printer configuration. Java desktop printing uses the printer selected by the operating system's print dialog; direct Bluetooth printing requires a platform-specific Bluetooth/ESC-POS integration.
+Settings stores the Bluetooth printer MAC address. Java's standard desktop printing opens the operating-system printer dialog. Direct Bluetooth ESC/POS printing remains platform/device-specific and is not falsely claimed as implemented.
 
-## Database Tables
+## Database
+
+The application creates/migrates these tables automatically:
 
 - `users`
 - `products`
 - `sales`
 - `sale_items`
 - `settings`
+- `audit_log`
 
-The application initializes the business defaults and credentials on startup. Existing `admin` and `owner` credentials are synchronized to `0099`.
+The database file is `fastfood.db` in the application's working directory. Admin/Owner can create a backup from **Backup**.
