@@ -1,49 +1,54 @@
 # MK Pizza & Ice Bar POS
 
-Complete Java 17 desktop Point of Sale system for **MK Pizza & Ice Bar**, Collage Road Abbas Chowk, Bhakkar, Pakistan.
+Java 17 + SQLite desktop POS/management system for **MK Pizza & Ice Bar**, Collage Road Abbas Chowk, Bhakkar, Pakistan.
 
-## Business Defaults
+## Business defaults
+- Business: MK Pizza & Ice Bar
+- Address: Collage Road Abbas Chowk, Bhakkar, Pakistan
+- Phone: 0316 9700025
+- Currency: Rs.
+- Tax: 0%
+- Business day starts: 06:00 (configurable)
+- Printer: 80mm profile; Bluetooth MAC is stored in Settings
 
-- Business: **MK Pizza & Ice Bar**
-- Address: **Collage Road Abbas Chowk, Bhakkar, Pakistan**
-- Phone: **0316 9700025**
-- Currency: **Rs.**
-- Tax: **0%**
-- Printer: configure Bluetooth MAC in **Settings**
+## Login
+- `admin / 0099` — Admin
+- `owner / 0099` — Owner
 
-## Default Users
+## Modules
+- Dashboard
+- POS foundation / existing sales database
+- Products & Menu
+- Product cost price, selling price and stock
+- Product history
+- Bulk CSV menu import/export
+- Bulk product-image linking by filename/code
+- Customers and customer ledger
+- Customer dues / payments / advances
+- Suppliers and supplier ledger
+- Supplier purchases / stock-in
+- Expenses
+- Opening cash and business-day sessions
+- Cash in / cash out
+- End-of-day cash reconciliation
+- Profit & Loss: revenue, COGS, gross profit, expenses, net profit/loss
+- Cash-flow summary
+- Printer detection for OS printers
+- 80mm print test
+- Persisted Bluetooth printer MAC and auto-reconnect preference
+- Business Settings
+- Existing SQLite database migration
 
-| Username | Role | Password |
-|---|---|---|
-| `admin` | Admin | `0099` |
-| `owner` | Owner | `0099` |
+## Bulk menu
+Use **Products / Menu → Bulk Import CSV**. Template:
 
-Passwords are stored as SHA-256 hashes in the completed POS database.
+```csv
+code,name,category,cost_price,selling_price,stock,image
+B01,Zinger Burger,Burgers,300,450,50,B01.jpg
+B02,Chicken Burger,Burgers,250,380,50,B02.jpg
+```
 
-## Completed POS Features
-
-- Secure login with Admin and Owner roles
-- Product/menu management with categories, prices and stock
-- Add/update/deactivate/reactivate products
-- Live stock validation at checkout
-- Cart quantity editing and removal
-- Percentage discounts
-- Configurable tax (0% default)
-- Cash payment and automatic change
-- Persistent SQLite sales database
-- Unique receipt numbers
-- Business-branded receipt generation and printing
-- Sales history with receipt search
-- Full-sale refund with automatic stock restoration
-- Refund status protection against duplicate refunds
-- Daily sales dashboard
-- Top-selling products
-- Low-stock report
-- User management and account disabling
-- Business/tax/currency/receipt/printer settings
-- SQLite database backup
-- Audit log for sales and refunds
-- Transaction-safe checkout and refund operations
+Use **Bulk Export CSV** to download the current menu. Use **Bulk Images** and select a folder where filenames match product codes, for example `B01.jpg`, `B02.png`, `P01.webp`.
 
 ## Run
 
@@ -52,43 +57,13 @@ mvn clean compile
 mvn exec:java
 ```
 
-Main class: `com.findupto.fastfood.CompletePOS`
-
-## Technology
-
-- Java 17+
-- Java Swing
-- Maven
-- SQLite via Xerial JDBC
-
-## Default Menu
-
-| Code | Item | Category | Price (Rs.) | Initial Stock |
-|---|---|---|---:|---:|
-| B01 | Zinger Burger | Burgers | 450 | 50 |
-| B02 | Chicken Burger | Burgers | 380 | 50 |
-| B03 | Beef Burger | Burgers | 520 | 30 |
-| F01 | Chicken Fries | Fries | 300 | 60 |
-| F02 | Loaded Fries | Fries | 420 | 40 |
-| P01 | Chicken Pizza | Pizza | 850 | 25 |
-| P02 | Pepperoni Pizza | Pizza | 950 | 25 |
-| D01 | Cold Drink | Drinks | 120 | 100 |
-| D02 | Fresh Lemonade | Drinks | 180 | 80 |
-| D03 | Mineral Water | Drinks | 80 | 100 |
-
-## Printer
-
-Settings stores the Bluetooth printer MAC address. Java's standard desktop printing opens the operating-system printer dialog. Direct Bluetooth ESC/POS printing remains platform/device-specific and is not falsely claimed as implemented.
+Main class: `com.findupto.fastfood.AppLauncher`
 
 ## Database
+The application uses `fastfood.db`. Newer modules are migrated automatically without replacing existing settings. Existing business settings are preserved; defaults are only inserted when a setting does not already exist.
 
-The application creates/migrates these tables automatically:
+## Printer note
+The application can detect operating-system printers and persist the Bluetooth MAC/reconnect preference. Universal automatic Bluetooth discovery and direct ESC/POS connection cannot be guaranteed by standard Java alone because Windows/Linux Bluetooth permissions, drivers, printer profiles and ESC/POS implementations differ. The printer module deliberately does not fake a connection; a platform-specific Bluetooth/ESC-POS adapter is the remaining hardware integration step.
 
-- `users`
-- `products`
-- `sales`
-- `sale_items`
-- `settings`
-- `audit_log`
-
-The database file is `fastfood.db` in the application's working directory. Admin/Owner can create a backup from **Backup**.
+## Important accounting note
+Profit/Loss uses product `cost_price` for COGS. For reliable profit, maintain accurate product costs and record stock-in/purchases through the Purchases module.
