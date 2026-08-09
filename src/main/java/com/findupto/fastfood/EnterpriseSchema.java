@@ -13,6 +13,11 @@ public final class EnterpriseSchema {
             s.execute("PRAGMA journal_mode=WAL");
             s.execute("PRAGMA busy_timeout=5000");
             String[] ddl = {
+                "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT UNIQUE NOT NULL,password TEXT NOT NULL,role TEXT NOT NULL,active INTEGER NOT NULL DEFAULT 1)",
+                "CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE NOT NULL,name TEXT NOT NULL,category TEXT NOT NULL,price REAL NOT NULL DEFAULT 0,stock INTEGER NOT NULL DEFAULT 0,active INTEGER NOT NULL DEFAULT 1,cost_price REAL NOT NULL DEFAULT 0)",
+                "CREATE TABLE IF NOT EXISTS sales(id INTEGER PRIMARY KEY AUTOINCREMENT,receipt_no TEXT UNIQUE NOT NULL,sold_at TEXT NOT NULL,total REAL NOT NULL DEFAULT 0,discount REAL NOT NULL DEFAULT 0,tax REAL NOT NULL DEFAULT 0,cash REAL NOT NULL DEFAULT 0,change_amount REAL NOT NULL DEFAULT 0,payment TEXT NOT NULL DEFAULT 'CASH',cashier TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'COMPLETED')",
+                "CREATE TABLE IF NOT EXISTS sale_items(id INTEGER PRIMARY KEY AUTOINCREMENT,sale_id INTEGER NOT NULL REFERENCES sales(id) ON DELETE CASCADE,product_id INTEGER,product_name TEXT NOT NULL,qty INTEGER NOT NULL,price REAL NOT NULL,amount REAL NOT NULL)",
+                "CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT NOT NULL)",
                 "CREATE TABLE IF NOT EXISTS categories(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT UNIQUE NOT NULL,active INTEGER NOT NULL DEFAULT 1)",
                 "CREATE TABLE IF NOT EXISTS product_images(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,path TEXT NOT NULL,sort_order INTEGER NOT NULL DEFAULT 0)",
                 "CREATE TABLE IF NOT EXISTS customers(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,phone TEXT,email TEXT,address TEXT,opening_balance REAL NOT NULL DEFAULT 0,active INTEGER NOT NULL DEFAULT 1)",
@@ -46,21 +51,14 @@ public final class EnterpriseSchema {
                 "CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(at)"
             };
             for (String sql : ddl) s.execute(sql);
-            defaultSetting(c, "business_name", "MK Pizza & Ice Bar");
-            defaultSetting(c, "business_address", "Collage Road Abbas Chowk, Bhakkar, Pakistan");
-            defaultSetting(c, "business_phone", "0316 9700025");
-            defaultSetting(c, "currency", "Rs.");
-            defaultSetting(c, "tax_rate", "0");
-            defaultSetting(c, "business_day_start", "06:00");
-            defaultSetting(c, "printer_width", "80mm");
-            defaultSetting(c, "printer_auto_reconnect", "true");
-            defaultSetting(c, "printer_bluetooth_mac", "");
-            defaultSetting(c, "receipt_footer", "Thank you! Visit again.");
-            defaultCategory(c, "Burgers"); defaultCategory(c, "Pizza"); defaultCategory(c, "Fries"); defaultCategory(c, "Drinks");
-            defaultOrderType(c, "Dine In"); defaultOrderType(c, "Takeaway"); defaultOrderType(c, "Delivery");
+            defaultSetting(c,"business_name","MK Pizza & Ice Bar"); defaultSetting(c,"business_address","Collage Road Abbas Chowk, Bhakkar, Pakistan"); defaultSetting(c,"business_phone","0316 9700025"); defaultSetting(c,"currency","Rs."); defaultSetting(c,"tax_rate","0"); defaultSetting(c,"business_day_start","06:00"); defaultSetting(c,"printer_width","80mm"); defaultSetting(c,"printer_auto_reconnect","true"); defaultSetting(c,"printer_bluetooth_mac",""); defaultSetting(c,"receipt_footer","Thank you! Visit again.");
+            defaultCategory(c,"Burgers"); defaultCategory(c,"Pizza"); defaultCategory(c,"Fries"); defaultCategory(c,"Drinks");
+            defaultOrderType(c,"Dine In"); defaultOrderType(c,"Takeaway"); defaultOrderType(c,"Delivery");
+            defaultPrinter(c);
         }
     }
     private static void defaultSetting(Connection c,String k,String v)throws SQLException{try(PreparedStatement p=c.prepareStatement("INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)")){p.setString(1,k);p.setString(2,v);p.executeUpdate();}}
     private static void defaultCategory(Connection c,String n)throws SQLException{try(PreparedStatement p=c.prepareStatement("INSERT OR IGNORE INTO categories(name) VALUES(?)")){p.setString(1,n);p.executeUpdate();}}
     private static void defaultOrderType(Connection c,String n)throws SQLException{try(PreparedStatement p=c.prepareStatement("INSERT OR IGNORE INTO order_types(name) VALUES(?)")){p.setString(1,n);p.executeUpdate();}}
+    private static void defaultPrinter(Connection c)throws SQLException{try(PreparedStatement p=c.prepareStatement("INSERT OR IGNORE INTO printer_settings(id,name,mac,connection_type,paper_width,auto_reconnect) VALUES(1,'80mm Thermal Printer','', 'SYSTEM',80,1)")){p.executeUpdate();}}
 }
