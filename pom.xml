@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.findupto</groupId>
     <artifactId>fastfood-pos</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <name>Fastfood POS</name>
     <description>Desktop Point of Sale system for a fast-food store</description>
     <properties>
@@ -11,6 +11,13 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.46.1.0</version>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -22,9 +29,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
-                <configuration>
-                    <mainClass>com.findupto.fastfood.FastfoodPOS</mainClass>
-                </configuration>
+                <configuration><mainClass>com.findupto.fastfood.FastfoodPOS</mainClass></configuration>
             </plugin>
         </plugins>
     </build>
